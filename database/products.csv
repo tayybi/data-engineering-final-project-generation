@@ -1,0 +1,4 @@
+product_name,product_price,_id,date_time,branch_name,product_id,payment_amount,payment_method
+cheese,5.25,11,2002-03-17 09:00:30,Chesterfied,1,5.25,cash
+coke,3.25,21,2002-03-17 09:00:30,Barnesfied,1,6.25,card
+chicken,3.25,31,2002-03-17 09:00:30,Barnesfied,2,6.25,card

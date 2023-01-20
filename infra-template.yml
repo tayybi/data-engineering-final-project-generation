@@ -1,0 +1,50 @@
+AWSTemplateFormatVersion: 2010-09-09
+Description: >
+  Template to deploy the project infrastructure. This template creates a lambda function, links to an existing role to set permissions.
+  It also creates an EC2 instance that hosts a Grafana instance in a Docker container.
+
+Resources:
+
+  # S3Bucket:
+  #   Type: 'AWS::S3::Bucket'
+  #   Properties:
+  #     BucketName: group2-dummybucket-cf
+      # NotificationConfiguration:
+      #   LambdaConfigurations:
+      #     - Event: s3:ObjectCreated:*
+      #       Function: !GetAtt LambdaFunction.Arn
+
+  # S3BucketPermission:
+  #   Type: AWS::Lambda::Permission
+  #   Properties: 
+  #     Action: lambda:InvokeFunction
+  #     FunctionName: !Ref LambdaFunction
+  #     Principal: s3.amazonaws.com
+  #     SourceArn: !GetAtt S3Bucket.Arn
+
+# lambda function
+  LambdaFunction:
+    Type: AWS::Lambda::Function
+    Properties:
+      Runtime: python3.9
+      Handler: lambda_function.lambda_handler
+      Role: arn:aws:iam::948243690849:role/lambda-execution-role
+      Environment:
+        Variables:
+          dbname: group2_cafe
+          host: redshiftcluster-bie5pcqdgojl.cje2eu9tzolt.eu-west-1.redshift.amazonaws.com
+          user: group2
+          password: Redshift-delon8-group2-87sweadj
+          port: 5439
+      Layers:
+        - arn:aws:lambda:eu-west-1:336392948345:layer:AWSSDKPandas-Python39:2
+        - arn:aws:lambda:eu-west-1:948243690849:layer:psycopg2_layer:3
+      VpcConfig:
+        SecurityGroupIds:
+          - sg-09ddd305daee3cb89
+        SubnetIds:
+          - subnet-07ed3e4e6dd0632e0
+          - subnet-0ec1bb10a4f1c8bc2
+      Code:
+        S3Bucket: group2-lambda-code
+        S3Key: etl_lambda.py
